@@ -5,6 +5,7 @@ import {cn} from "@/lib/utils";
 import {useRouter} from "next/navigation";
 import {vapi} from '@/lib/vapi.sdk';
 import {interviewer} from "@/constants";
+import {createFeedback} from "@/lib/actions/general.action";
 
 enum CallStatus{
     INACTIVE = 'INACTIVE',
@@ -57,14 +58,15 @@ const Agent = ({userName, userId, type, interviewId, questions}:AgentProps) => {
         }
     }, [])
 
-    //TODO: CREATE SERVER ACTION THAT GENERATE THE FEEDBACK
     const handleGenerateFeedback = async (messages: SavedMessage[]) => {
         console.log('generate feedback');
 
-        const {success, id} = {
-            success: true,
-            id: 'feedback-id'
-        }
+        const {success, feedbackId: id} = await createFeedback({
+            interviewId: interviewId,
+            userId: userId!,
+            transcript: messages
+        })
+
         if(success && id) {
             router.push(`/interview/${interviewId}/feedback`);
         }else{
@@ -105,14 +107,17 @@ const Agent = ({userName, userId, type, interviewId, questions}:AgentProps) => {
                 }
             })
         }
-
     }
+
     const handleDisconnect = () => {
         setCallStatus(CallStatus.FINISHED);
         vapi.stop();
     }
+
     const latestMessage = messages[messages.length - 1]?.content || '';
     const isCallInnactiveOrFinished = callStatus === CallStatus.INACTIVE || callStatus === CallStatus.FINISHED;
+
+
     return (
         <>
             <div className="call-view">
