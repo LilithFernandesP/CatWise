@@ -129,7 +129,7 @@ const Agent = ({userName, userId, type, interviewId, questions, userAvatar}:Agen
             <div className="call-view">
                 <div className="card-interviewer">
                     <div className="avatar">
-                        <Image src="/catwise.png" alt="vapi" width={89} height={89} className="object-cover" />
+                        <Image src="/CatWise.png" alt="vapi" width={89} height={89} className="object-cover" />
                         {isSpeaking && <span className='animate-speak'/>}
                     </div>
                     <h3>Professor Cat</h3>
