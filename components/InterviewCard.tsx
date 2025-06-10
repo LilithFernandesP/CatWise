@@ -15,24 +15,26 @@ const InterviewCard = async ({
                            createdAt
                        }: InterviewCardProps) => {
 
-    const feedback = userId && id
-        ? await getFeedbackByInterviewId({interviewId: id, userId})
-        : null;
+    const feedback = await getFeedbackByInterviewId({
+        interviewId: id,
+        userId: userId,
+    })
     const normalizedType = /mix/gi.test(type) ? 'Mixed' : type;
     const formatedDate = dayjs(feedback?.createdAt || createdAt || Date.now()).format('MMM D, YYYY')
 
+    console.log(feedback)
     return (
         <div className='card-border w-[360px] max-sm:w-full min-h-96'>
             <div className='card-interview'>
                 <div>
-                    <div className='absolute top-0 right-0 w-fit px-4 py-2 rounded-bl-lg  bg-light-600'>
+                    <div className='absolute top-0 right-0 w-fit px-4 py-2 rounded-bl-lg  bg-secondary'>
                         <p className='badge-text'>{normalizedType}</p>
                     </div>
                     <Image src={getRandomInterviewCover()} alt='cover image' width={90} height={90}
                            className='rounded-full object-fit size[90px]'/>
 
                     <h3 className='mt-5 capitalize'>
-                        {role} Interview
+                        {role} quiz
                     </h3>
 
                     <div className='flex flex-row gap-5 mt-3'>
@@ -47,7 +49,7 @@ const InterviewCard = async ({
                     </div>
 
                     <p className='line-clamp-2 mt-5'>
-                        {feedback?.finalAssessment || "You haven't taken the interview yet. Take it now to improve your skills"}
+                        {feedback?.finalAssessment || "You haven't taken the quiz yet. Take it now to improve your skills"}
                     </p>
                 </div>
 
@@ -58,7 +60,7 @@ const InterviewCard = async ({
                             ? `/interview/${id}/feedback`
                             : `/interview/${id}`
                         }>
-                            {feedback ? 'Check Feeback' : "View Interview"}
+                            {feedback ? 'Check Feeback' : "Take the quiz"}
                         </Link>
                     </Button>
                 </div>

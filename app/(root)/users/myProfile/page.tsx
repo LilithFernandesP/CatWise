@@ -1,14 +1,13 @@
 import React from 'react'
-import Agent from "@/components/Agent";
 import {getCurrentUser} from "@/lib/actions/auth.action";
+import MyProfileForm from "@/components/MyProfileForm";
 
 const Page = async () => {
     const user = await getCurrentUser();
+    if (!user) return <div>Usuário não logado</div>
     return (
         <>
-            <h3>Interview Generation</h3>
-
-            <Agent userName={user?.name} userId={user?.id} type="generate" userAvatar={user.profilePictureUrl} />
+            <MyProfileForm user={user} />
         </>
     )
 }

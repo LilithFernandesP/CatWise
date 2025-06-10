@@ -1,5 +1,5 @@
 "use server";
-import {db, auth} from "@/Firebase/admin";
+import {auth, db} from "@/Firebase/admin";
 import {cookies} from "next/headers";
 
 
@@ -23,8 +23,21 @@ export async function setSessionCookie(idToken: string) {
     });
 }
 
-export async function signUp(Params: SignUpParams) {
-    const {uid, name, email} = Params;
+export async function isUsernameTaken(Params: { username: string }) {
+    const Snapshot = await db.collection('users').where("username", "==", Params.username).get();
+    return !Snapshot.empty;
+
+}
+
+export async function signUp(Params: {
+    uid: string;
+    name: string;
+    email: string;
+    username: string;
+    password: string;
+    profilePictureUrl?: string | ""
+}) {
+    const {uid, name, email, profilePictureUrl, username} = Params;
     try {
         const userRecord = await db.collection('users').doc(uid).get();
 
@@ -34,8 +47,12 @@ export async function signUp(Params: SignUpParams) {
                 msg: 'User already exists!'
             }
         }
+
         await db.collection('users').doc(uid).set({
-            name, email
+            name,
+            username,
+            email,
+            profilePictureUrl: profilePictureUrl || "",
         })
 
         return {
@@ -111,9 +128,23 @@ export async function getCurrentUser(): Promise<User | null> {
 
 }
 
+export async function GetUserByUsername({username}: {username: string}) {
+    const snapshot  = await db.collection('users').where("username", "==", username).get();
+    if (snapshot.empty) return null;
+
+    return snapshot.docs[0].data();
+}
+
 export async function isAuthenticated(): Promise<boolean> {
     const user = await getCurrentUser();
 
     return !!user;
 }
 
+export async function logout() {
+    const cookieStore = await cookies();
+    cookieStore.set("session", "", {
+        maxAge: 0,
+        path: "/",
+    });
+}

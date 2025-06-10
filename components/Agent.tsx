@@ -7,6 +7,7 @@ import {vapi} from '@/lib/vapi.sdk';
 import {interviewer} from "@/constants";
 import {createFeedback} from "@/lib/actions/general.action";
 
+
 enum CallStatus{
     INACTIVE = 'INACTIVE',
     CONNECTING = 'CONNECTING',
@@ -19,7 +20,7 @@ interface SavedMessage {
     content: string;
 }
 
-const Agent = ({userName, userId, type, interviewId, questions}:AgentProps) => {
+const Agent = ({userName, userId, type, interviewId, questions, userAvatar}:AgentProps) => {
 
     const router = useRouter();
     const [isSpeaking, setIsSpeaking] = useState(false);
@@ -89,12 +90,17 @@ const Agent = ({userName, userId, type, interviewId, questions}:AgentProps) => {
         setCallStatus(CallStatus.CONNECTING);
 
         if(type === 'generate'){
-            await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
-            variableValues:{
-                username: userName,
-                userid: userId,
-            }
-        })
+            await vapi.start(
+                undefined,
+                undefined,
+                undefined,
+                process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,
+                {
+                    variableValues: {
+                        userid: userId,
+                    },
+                }
+            );
         }else {
             let formattedQuestions = '';
             if(questions){
@@ -123,15 +129,15 @@ const Agent = ({userName, userId, type, interviewId, questions}:AgentProps) => {
             <div className="call-view">
                 <div className="card-interviewer">
                     <div className="avatar">
-                        <Image src="/ai-avatar.png" alt="vapi" width={65} height={54} className="object-cover" />
+                        <Image src="/catwise.png" alt="vapi" width={89} height={89} className="object-cover" />
                         {isSpeaking && <span className='animate-speak'/>}
                     </div>
-                    <h3>Ai Interviewer</h3>
+                    <h3>Professor Cat</h3>
                 </div>
 
                 <div className='card-border'>
                     <div className='card-content'>
-                        <Image src="/user-avatar.png" alt="user avatar" width={540} height={540} className="rounded-full object-cover size-[120px]"/>
+                        <Image src={userAvatar || "/default-avatar.png"} alt="user avatar" width={540} height={540} className="rounded-full object-cover size-[120px]"/>
                         <h3>{userName}</h3>
                     </div>
                 </div>

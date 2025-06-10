@@ -24,7 +24,7 @@ const Page = async ({params}: RouteParams) => {
                     </div>
                     <DisplayTechIcons techStack={interview.techstack}/>
                 </div>
-                <p className='bg-dark-200 px-4 py-2 rounded-lg h-fit capitalize'>{interview.type}</p>
+                <p className='bg-secondary px-4 py-2 rounded-lg h-fit capitalize'>{interview.type}</p>
             </div>
             <Agent
                 userName={user?.name || ''}
@@ -32,6 +32,7 @@ const Page = async ({params}: RouteParams) => {
                 interviewId={id}
                 type="interview"
                 questions={interview.questions}
+                userAvatar={user.profilePictureUrl}
             />
         </>
     )

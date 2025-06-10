@@ -4,6 +4,19 @@ import {generateObject} from "ai";
 import {google} from "@ai-sdk/google";
 import {feedbackSchema} from "@/constants";
 
+
+export async function updateUserProfile(params: {
+    uid: string
+    bio: string
+    photoUrl: string
+}){
+    const { uid, bio, photoUrl } = params
+    await db.collection("users").doc(uid).update({
+        profilePictureUrl: photoUrl,
+        bio
+    });
+}
+
 export async function getInterviewByUserId(userId: string): Promise<Interview[] | null> {
 
     const interviews = await db
@@ -113,8 +126,8 @@ export async function getFeedbackByInterviewId(params: GetFeedbackByInterviewIdP
 
     const feedback = await db
         .collection('feedback')
-        .where('interviewId', '==', interviewId)
         .where('userId', '==', userId)
+        .where('interviewId', '==', interviewId)
         .limit(1)
         .get();
 
@@ -126,4 +139,17 @@ export async function getFeedbackByInterviewId(params: GetFeedbackByInterviewIdP
         id: feedbackDoc.id, ...feedbackDoc.data(),
     } as Feedback;
 
+}
+export async function getUsers(){
+    try {
+        const snapshot = await db.collection('users').get();
+
+        return snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        })) as User[];
+    } catch (error) {
+        console.error("Erro ao buscar usuários:", error);
+        return [];
+    }
 }
