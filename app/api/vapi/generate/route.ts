@@ -4,40 +4,51 @@ import {getRandomInterviewCover} from "@/lib/utils";
 import {db} from "@/Firebase/admin";
 
 export async function GET() {
-    return Response.json({success:true, data:'Thanks'} , {status:200});
+    return Response.json({success: true, data: 'Thanks'}, {status: 200});
 }
 
-export async function POST(request : Request) {
-    const { theme, level, amount, userid } = await request.json();
+export async function POST(request: Request) {
+    const {theme, level, amount, area, purpose, userid} = await request.json();
 
     try {
-        const {text : questions} = await generateText({
+        const {text: questions} = await generateText({
             model: google('gemini-2.0-flash-001'),
-            prompt:  `Prepare questions for a class.
-        The theme is ${theme}.
-        The difficulty is ${level}.
-        The amount of questions required is: ${amount}.
-        Please return only the questions, without any additional text.
-        The questions are going to be read by a voice assistant so do not use "/" or "*" or any other special characters which might break the voice assistant.
-        Return the questions formatted like this:
-        ["Question 1", "Question 2", "Question 3"]
-        
-        Thank you! <3
-    `,
+            prompt: `As an experienced teacher, create a quiz that feels like an interactive lesson.
+The main theme is ${theme}, with a focus on the specific area of interest: ${area}.
+The complexity of the questions should be at a ${level} level.
+Generate ${amount} questions.
+The purpose of the quiz is ${purpose}.
+
+For each question, adopt an explanatory and didactic tone. Imagine you are presenting a concept and then asking a question to check for understanding. Avoid simply listing dry questions.
+
+The questions will be read by a voice assistant, so:
+- Do not use special characters like "/", "*", or others that might cause reading issues.
+- Ensure each question can be understood independently.
+
+Respond only with a raw JSON array of strings. Do NOT include triple backticks, markdown formatting, or any explanation.
+Format example:
+["Question 1 with a didactic and contextual touch", "Question 2 that explores an explained concept", "Question 3 that simulates a learning check"]
+`,
         })
+        const cleaned = questions
+            .replace(/```json/g, '')
+            .replace(/```/g, '')
+            .trim();
+
         const classes = {
-            theme, level,
-            questions: JSON.parse(questions),
+            theme, level, area, purpose,
+            questions: JSON.parse(cleaned),
             userId: userid,
             finalized: true,
             coverImage: getRandomInterviewCover(),
             createdAt: new Date().toISOString(),
         }
+        console.log(questions)
         await db.collection("classes").add(classes);
-        return Response.json({success:true} , {status:200});
-    }catch(e) {
+        return Response.json({success: true}, {status: 200});
+    } catch (e) {
         console.error(e);
-        return Response.json({success:false, e}, {status:500});
+        return Response.json({success: false, e}, {status: 500});
     }
 
 }

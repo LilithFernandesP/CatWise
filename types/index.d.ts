@@ -12,7 +12,17 @@ interface Feedback {
     finalAssessment: string;
     createdAt: string;
 }
-
+interface Quizz{
+    id: string;
+    level: string;
+    theme: string;
+    amount: number;
+    userId: string;
+    area: string;
+    purpose: string;
+    finalized: boolean;
+    questions: string[];
+}
 interface Interview {
     id: string;
     role: string;
