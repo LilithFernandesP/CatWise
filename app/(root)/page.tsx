@@ -37,7 +37,7 @@ const Page = async () => {
                         <Link href='/interview'>Generate a quiz</Link>
                     </Button>
                 </div>
-                <Image src='/robot.png' alt='robo-dude' width={400} height={400} className='max-sm:hidden'/>
+                <Image src='/profCatBg.png' alt='ProfessorCat' width={400} height={400} className='max-sm:hidden rounded-2xl shadow-xl drop-shadow-xl'/>
             </section>
 
             <section className='flex flex-col gap-6 mt-8'>
