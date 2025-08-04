@@ -2,22 +2,26 @@ import React from 'react'
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import InterviewCard from "@/components/InterviewCard";
+import InterviewCard from "@/components/QuizzCard";
 import {getCurrentUser} from '@/lib/actions/auth.action';
-import {getInterviewByUserId, getLatestInterviews} from "@/lib/actions/general.action";
+import {
+    getLatestQuizzes,
+    GetQuizzesByUserId
+} from "@/lib/actions/general.action";
 import {UserCircle} from "lucide-react";
+import QuizzCard from "@/components/QuizzCard";
 
 const Page = async () => {
     const user = await getCurrentUser();
 
-    const [userInterviews, latestInterview] = await Promise.all([
-        await getInterviewByUserId(user?.id!),
-        await getLatestInterviews({userId: user?.id!}),
+    const [userQuizzes, latestQuizzes] = await Promise.all([
+        await GetQuizzesByUserId(user?.id!),
+        await getLatestQuizzes({userId: user?.id!}),
     ])
 
 
-    const hasPastInterviews = userInterviews?.length > 0;
-    const hasUpcomingInterviews = latestInterview?.length > 0;
+    const hasPastQuizzes = userQuizzes?.length > 0;
+    const hasUpcomingQuizzes = latestQuizzes?.length > 0;
 
     return (
         <>
@@ -41,9 +45,9 @@ const Page = async () => {
 
                 <div className='interviews-section'>
                     {
-                        hasPastInterviews ? (
-                            userInterviews?.map((interview) => (
-                                <InterviewCard {...interview} userId={user?.id!} key={interview.id}/>
+                        hasPastQuizzes ? (
+                            userQuizzes?.map((quizz) => (
+                                <QuizzCard {...quizz} userId={user?.id!} key={quizz.id}/>
                             ))) : (
                             <p>You haven&apos;t taken any quiz yet</p>
                         )
@@ -57,8 +61,8 @@ const Page = async () => {
                 <h2>Take a quiz</h2>
                 <div className='interviews-section'>
                     {
-                        hasUpcomingInterviews ? (
-                            latestInterview?.map((interview) => (
+                        hasUpcomingQuizzes ? (
+                            latestQuizzes?.map((interview) => (
                                 <InterviewCard {...interview} userId={user?.id!} key={interview.id}/>
                             ))) : (
                             <p>There are no quiz available</p>

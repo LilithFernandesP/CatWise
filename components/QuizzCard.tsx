@@ -6,20 +6,20 @@ import Link from "next/link";
 import DisplayTechIcons from "@/components/DisplayTechIcons";
 import {getFeedbackByInterviewId} from "@/lib/actions/general.action";
 
-const InterviewCard = async ({
-                           id,
-                           userId,
-                           role,
-                           type,
-                           techstack,
-                           createdAt
-                       }: InterviewCardProps) => {
+const QuizzCard = async ({
+                             id,
+                             userId,
+                             createdAt,
+                             theme,
+                             area,
+                             purpose
+                       }: QuizzCardProps) => {
 
     const feedback = await getFeedbackByInterviewId({
         interviewId: id,
         userId: userId,
     })
-    const normalizedType = /mix/gi.test(type) ? 'Mixed' : type;
+    const normalizedType = /mix/gi.test(theme) ? 'Mixed' : theme;
     const formatedDate = dayjs(feedback?.createdAt || createdAt || Date.now()).format('MMM D, YYYY')
 
     console.log(feedback)
@@ -34,7 +34,7 @@ const InterviewCard = async ({
                            className='rounded-full object-fit size[90px]'/>
 
                     <h3 className='mt-5 capitalize'>
-                        {role} quiz
+                        {area} quiz
                     </h3>
 
                     <div className='flex flex-row gap-5 mt-3'>
@@ -54,7 +54,7 @@ const InterviewCard = async ({
                 </div>
 
                 <div className='flex flex-row justify-between'>
-                    <DisplayTechIcons  techStack={techstack} />
+                    {/*<DisplayTechIcons  techStack={techstack} />*/}
                     <Button className='btn-primary'>
                         <Link href={feedback
                             ? `/interview/${id}/feedback`
@@ -70,4 +70,4 @@ const InterviewCard = async ({
     )
 
 }
-export default InterviewCard
+export default QuizzCard

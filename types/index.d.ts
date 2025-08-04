@@ -51,12 +51,12 @@ interface User {
     profilePictureUrl: string;
 }
 
-interface InterviewCardProps {
+interface QuizzCardProps {
     id?: string;
     userId?: string;
-    role: string;
-    type: string;
-    techstack: string[];
+    theme?: string;
+    area?: string;
+    purpose?: string;
     createdAt?: string;
 }
 
@@ -68,6 +68,9 @@ interface AgentProps {
     type: "generate" | "interview";
     questions?: string[];
     userAvatar : string;
+    theme?: string;
+    area?: string;
+    purpose?: string;
 }
 
 interface RouteParams {

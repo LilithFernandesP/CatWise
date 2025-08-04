@@ -17,46 +17,46 @@ export async function updateUserProfile(params: {
     });
 }
 
-export async function getInterviewByUserId(userId: string): Promise<Interview[] | null> {
+export async function GetQuizzesByUserId(userId: string): Promise<Quizz[] | null> {
 
-    const interviews = await db
-        .collection('interviews')
+    const classes = await db
+        .collection('classes')
         .where('userId', '==', userId)
         .orderBy('createdAt', 'desc')
         .get();
 
-    return interviews.docs.map((doc) => ({
+    return classes.docs.map((doc) => ({
         id: doc.id,
         ...doc.data()
-    })) as Interview[];
+    })) as Quizz[];
 }
 
-export async function getLatestInterviews(params: GetLatestInterviewsParams): Promise<Interview[] | null> {
+export async function getLatestQuizzes(params: GetLatestInterviewsParams): Promise<Quizz[] | null> {
     const {userId, limit = 20} = params;
 
-    const interviews = await db
-        .collection('interviews')
+    const classes = await db
+        .collection('classes')
         .orderBy('createdAt', 'desc')
         .where('finalized', '==', true)
         .where('userId', '!=', userId)
         .limit(limit)
         .get();
 
-    return interviews.docs.map((doc) => ({
+    return classes.docs.map((doc) => ({
         id: doc.id,
         ...doc.data()
-    })) as Interview[];
+    })) as Quizz[];
 
 }
 
-export async function getInterviewById(id: string): Promise<Interview | null> {
+export async function getQuizzById(id: string): Promise<Quizz | null> {
 
-    const interview = await db
-        .collection('interviews')
+    const quizz = await db
+        .collection('classes')
         .doc(id)
         .get();
 
-    return interview.data() as Interview;
+    return quizz.data() as Quizz;
 }
 
 export async function createFeedback(params: CreateFeedbackParams) {

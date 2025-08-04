@@ -38,7 +38,7 @@ Format example:
         const classes = {
             theme, level, area, purpose,
             questions: JSON.parse(cleaned),
-            userId: userid,
+            userid: userid,
             finalized: true,
             coverImage: getRandomInterviewCover(),
             createdAt: new Date().toISOString(),

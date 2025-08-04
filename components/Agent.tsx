@@ -20,7 +20,7 @@ interface SavedMessage {
     content: string;
 }
 
-const Agent = ({userName, userId, type, interviewId, questions, userAvatar}:AgentProps) => {
+const Agent = ({userName, userId, type, interviewId, questions, userAvatar, theme, area, purpose}:AgentProps) => {
 
     const router = useRouter();
     const [isSpeaking, setIsSpeaking] = useState(false);
@@ -110,6 +110,9 @@ const Agent = ({userName, userId, type, interviewId, questions, userAvatar}:Agen
             await vapi.start(interviewer, {
                 variableValues:{
                     questions: formattedQuestions,
+                    area: area,
+                    purpose: purpose,
+                    theme: theme,
                 }
             })
         }
