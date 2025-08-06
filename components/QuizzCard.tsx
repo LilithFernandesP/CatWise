@@ -4,7 +4,7 @@ import {getRandomInterviewCover} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import DisplayTechIcons from "@/components/DisplayTechIcons";
-import {getFeedbackByInterviewId} from "@/lib/actions/general.action";
+import {getFeedbackByQuizzId} from "@/lib/actions/general.action";
 
 const QuizzCard = async ({
                              id,
@@ -15,8 +15,8 @@ const QuizzCard = async ({
                              purpose
                        }: QuizzCardProps) => {
 
-    const feedback = await getFeedbackByInterviewId({
-        interviewId: id,
+    const feedback = await getFeedbackByQuizzId({
+        quizzId: id,
         userId: userId,
     })
     const normalizedType = /mix/gi.test(theme) ? 'Mixed' : theme;

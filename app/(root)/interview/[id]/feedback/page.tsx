@@ -1,6 +1,9 @@
 import React from 'react'
 import {getCurrentUser} from "@/lib/actions/auth.action";
-import {getFeedbackByInterviewId, getInterviewById} from "@/lib/actions/general.action";
+import {
+    getQuizzById,
+    getFeedbackByQuizzId
+} from "@/lib/actions/general.action";
 import {redirect} from "next/navigation";
 import {Button} from "@/components/ui/button";
 import dayjs from "dayjs";
@@ -11,11 +14,11 @@ const Page = async ({params} : RouteParams) => {
     const {id} = await params;
     const user = await getCurrentUser();
 
-    const interview = await getInterviewById(id)
-    if(!interview) redirect('/');
+    const quizz = await getQuizzById(id)
+    if(!quizz) redirect('/');
 
-    const feedback = await getFeedbackByInterviewId({
-        interviewId: id,
+    const feedback = await getFeedbackByQuizzId({
+        quizzId: id,
         userId: user?.id!,
     })
     console.log(feedback)
@@ -24,7 +27,7 @@ const Page = async ({params} : RouteParams) => {
                 <div className="flex flex-row justify-center">
                     <h1 className="text-4xl font-semibold">
                         Feedback on the Interview -{" "}
-                        <span className="capitalize">{interview.role}</span> Interview
+                        <span className="capitalize">{quizz.theme}</span> Interview
                     </h1>
                 </div>
 

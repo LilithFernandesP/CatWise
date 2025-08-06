@@ -36,7 +36,7 @@ interface Interview {
 }
 
 interface CreateFeedbackParams {
-    interviewId: string;
+    quizzId: string;
     userId: string;
     transcript: { role: string; content: string }[];
     feedbackId?: string;
@@ -79,7 +79,7 @@ interface RouteParams {
 }
 
 interface GetFeedbackByInterviewIdParams {
-    interviewId: string;
+    quizzId: string;
     userId: string;
 }
 

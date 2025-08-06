@@ -9,8 +9,8 @@ export async function updateUserProfile(params: {
     uid: string
     bio: string
     photoUrl: string
-}){
-    const { uid, bio, photoUrl } = params
+}) {
+    const {uid, bio, photoUrl} = params
     await db.collection("users").doc(uid).update({
         profilePictureUrl: photoUrl,
         bio
@@ -61,7 +61,7 @@ export async function getQuizzById(id: string): Promise<Quizz | null> {
 
 export async function createFeedback(params: CreateFeedbackParams) {
 
-    const {interviewId, userId, transcript} = params;
+    const {quizzId, userId, transcript} = params;
 
     try {
         const formattedTranscript = transcript.map((sentence: { role: string; content: string; }) => (
@@ -82,23 +82,27 @@ export async function createFeedback(params: CreateFeedbackParams) {
             }),
             schema: feedbackSchema,
             prompt: `
-        You are an AI interviewer analyzing a mock interview. Your task is to evaluate the candidate based on structured categories. Be thorough and detailed in your analysis. Don't be lenient with the candidate. If there are mistakes or areas for improvement, point them out.
-        Transcript:
-        ${formattedTranscript}
+        You are an AI teacher analyzing a student's performance in a quiz. Your task is to evaluate the student based on structured categories related to learning and comprehension. Be honest and specific in your feedback. Highlight strengths, but also clearly point out mistakes and areas that need improvement to help the student grow academically.
 
-        Please score the candidate from 0 to 100 in the following areas. Do not add categories other than the ones provided:
-        - **Communication Skills**: Clarity, articulation, structured responses.
-        - **Technical Knowledge**: Understanding of key concepts for the role.
-        - **Problem-Solving**: Ability to analyze problems and propose solutions.
-        - **Cultural & Role Fit**: Alignment with company values and job role.
-        - **Confidence & Clarity**: Confidence in responses, engagement, and clarity.
+Transcript of student's answers and behavior during the quiz:
+${formattedTranscript}
+
+Please score the student from 0 to 100 in the following areas. Do not add categories other than the ones provided:
+
+- **Subject Understanding**: Did the student demonstrate a clear grasp of the main concepts?
+- **Accuracy**: Were the answers factually correct and free from major errors?
+- **Application & Problem-Solving**: Could the student apply the knowledge to solve problems or explain reasoning?
+- **Communication of Reasoning**: Were the explanations clear, logical, and easy to follow?
+- **Engagement & Effort**: Did the student show motivation, attention, and willingness to participate?
+
+Give a numerical score (0-100) and a specific comment for each category. At the end, give a **total score** (average of the 5 categories), followed by a short, overall summary of the student's performance.
         `,
             system:
-                "You are a professional interviewer analyzing a mock interview. Your task is to evaluate the candidate based on structured categories",
+                "You are a professional educator evaluating a student's performance in an academic quiz. Your feedback must be structured, objective, and focused on both strengths and areas to improve. Be supportive, but do not overlook mistakes.",
         });
 
         const feedback = await db.collection('feedback').add({
-            interviewId,
+            quizzId,
             userId,
             totalScore,
             categoryScores,
@@ -120,14 +124,14 @@ export async function createFeedback(params: CreateFeedbackParams) {
     }
 }
 
-export async function getFeedbackByInterviewId(params: GetFeedbackByInterviewIdParams): Promise<Feedback | null> {
+export async function getFeedbackByQuizzId(params: GetFeedbackByInterviewIdParams): Promise<Feedback | null> {
 
-    const {interviewId, userId} = params;
+    const {quizzId, userId} = params;
 
     const feedback = await db
         .collection('feedback')
         .where('userId', '==', userId)
-        .where('interviewId', '==', interviewId)
+        .where('quizzId', '==', quizzId)
         .limit(1)
         .get();
 
@@ -140,7 +144,8 @@ export async function getFeedbackByInterviewId(params: GetFeedbackByInterviewIdP
     } as Feedback;
 
 }
-export async function getUsers(){
+
+export async function getUsers() {
     try {
         const snapshot = await db.collection('users').get();
 

@@ -63,7 +63,7 @@ const Agent = ({userName, userId, type, interviewId, questions, userAvatar, them
         console.log('generate feedback');
 
         const {success, feedbackId: id} = await createFeedback({
-            interviewId: interviewId,
+            quizzId: interviewId,
             userId: userId!,
             transcript: messages
         })
