@@ -15,7 +15,7 @@ const RootLayout = async ({children} : {children : ReactNode}) => {
             <nav className='flex justify-between'>
                 <Link href='/' className='flex items-center gap-2'>
                     <Image src='/CatWise.png' alt='Logo' width={38} height={32}/>
-                    <h2 className='text-textColor'>PrepWise</h2>
+                    <h2 className='text-textColor'>Catwise</h2>
                 </Link>
                 {user?.profilePictureUrl ? (
                     <Link href={`/users/myProfile`}><img
